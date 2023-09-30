@@ -1,0 +1,65 @@
+# This file contains a list of people who've made non-trivial
+# contribution to the Khulnasoft C++ Testing Framework project.  People
+# who commit code to the project are encouraged to add their names
+# here.  Please keep the list sorted by first names.
+
+Ajay Joshi <jaj@khulnasoft.com>
+Balázs Dán <balazs.dan@gmail.com>
+Benoit Sigoure <tsuna@khulnasoft.com>
+Bharat Mediratta <bharat@menalto.com>
+Bogdan Piloca <boo@khulnasoft.com>
+Chandler Carruth <chandlerc@khulnasoft.com>
+Chris Prince <cprince@khulnasoft.com>
+Chris Taylor <taylorc@khulnasoft.com>
+Dan Egnor <egnor@khulnasoft.com>
+Dave MacLachlan <dmaclach@gmail.com>
+David Anderson <danderson@khulnasoft.com>
+Dean Sturtevant
+Eric Roman <eroman@chromium.org>
+Gene Volovich <gv@cite.com>
+Hady Zalek <hady.zalek@gmail.com>
+Hal Burch <kmock@hburch.com>
+Jeffrey Yasskin <jyasskin@khulnasoft.com>
+Jim Keller <jimkeller@khulnasoft.com>
+Joe Walnes <joe@truemesh.com>
+Jon Wray <jwray@khulnasoft.com>
+Jói Sigurðsson <joi@khulnasoft.com>
+Keir Mierle <mierle@gmail.com>
+Keith Ray <keith.ray@gmail.com>
+Kenton Varda <kenton@khulnasoft.com>
+Kostya Serebryany <kcc@khulnasoft.com>
+Krystian Kuzniarek <krystian.kuzniarek@gmail.com>
+Lev Makhlis
+Manuel Klimek <klimek@khulnasoft.com>
+Mario Tanev <radix@khulnasoft.com>
+Mark Paskin
+Markus Heule <markus.heule@gmail.com>
+Martijn Vels <mvels@khulnasoft.com>
+Matthew Simmons <simmonmt@acm.org>
+Mika Raento <mikie@iki.fi>
+Mike Bland <mbland@khulnasoft.com>
+Miklós Fazekas <mfazekas@szemafor.com>
+Neal Norwitz <nnorwitz@gmail.com>
+Nermin Ozkiranartli <nermin@khulnasoft.com>
+Owen Carlsen <ocarlsen@khulnasoft.com>
+Paneendra Ba <paneendra@khulnasoft.com>
+Pasi Valminen <pasi.valminen@gmail.com>
+Patrick Hanna <phanna@khulnasoft.com>
+Patrick Riley <pfr@khulnasoft.com>
+Paul Menage <menage@khulnasoft.com>
+Peter Kaminski <piotrk@khulnasoft.com>
+Piotr Kaminski <piotrk@khulnasoft.com>
+Preston Jackson <preston.a.jackson@gmail.com>
+Rainer Klaffenboeck <rainer.klaffenboeck@dynatrace.com>
+Russ Cox <rsc@khulnasoft.com>
+Russ Rufer <russ@pentad.com>
+Sean Mcafee <eefacm@gmail.com>
+Sigurður Ásgeirsson <siggi@khulnasoft.com>
+Sverre Sundsdal <sundsdal@gmail.com>
+Szymon Sobik <sobik.szymon@gmail.com>
+Takeshi Yoshino <tyoshino@khulnasoft.com>
+Tracy Bialik <tracy@pentad.com>
+Vadim Berman <vadimb@khulnasoft.com>
+Vlad Losev <vladl@khulnasoft.com>
+Wolfgang Klier <wklier@khulnasoft.com>
+Zhanyong Wan <wan@khulnasoft.com>

@@ -1,0 +1,595 @@
+# Copyright 2017 Khulnasoft Inc.
+# All Rights Reserved.
+#
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+#     * Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+#     * Redistributions in binary form must reproduce the above
+# copyright notice, this list of conditions and the following disclaimer
+# in the documentation and/or other materials provided with the
+# distribution.
+#     * Neither the name of Khulnasoft Inc. nor the names of its
+# contributors may be used to endorse or promote products derived from
+# this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+# Bazel BUILD for The Khulnasoft C++ Testing Framework (Khulnasoft Test)
+
+load("@rules_python//python:defs.bzl", "py_library", "py_test")
+
+licenses(["notice"])
+
+package(default_visibility = ["//:__subpackages__"])
+
+#on windows exclude ktest-tuple.h
+cc_test(
+    name = "ktest_all_test",
+    size = "small",
+    srcs = glob(
+        include = [
+            "ktest-*.cc",
+            "khulnasofttest-*.cc",
+            "*.h",
+            "khulnasofttest/include/ktest/**/*.h",
+        ],
+        exclude = [
+            "ktest-unittest-api_test.cc",
+            "khulnasofttest/src/ktest-all.cc",
+            "ktest_all_test.cc",
+            "ktest-death-test_ex_test.cc",
+            "ktest-listener_test.cc",
+            "ktest-unittest-api_test.cc",
+            "khulnasofttest-param-test-test.cc",
+            "khulnasofttest-param-test2-test.cc",
+            "khulnasofttest-catch-exceptions-test_.cc",
+            "khulnasofttest-color-test_.cc",
+            "khulnasofttest-env-var-test_.cc",
+            "khulnasofttest-failfast-unittest_.cc",
+            "khulnasofttest-filter-unittest_.cc",
+            "khulnasofttest-global-environment-unittest_.cc",
+            "khulnasofttest-break-on-failure-unittest_.cc",
+            "khulnasofttest-listener-test.cc",
+            "khulnasofttest-message-test.cc",
+            "khulnasofttest-output-test_.cc",
+            "khulnasofttest-list-tests-unittest_.cc",
+            "khulnasofttest-shuffle-test_.cc",
+            "khulnasofttest-setuptestsuite-test_.cc",
+            "khulnasofttest-uninitialized-test_.cc",
+            "khulnasofttest-death-test_ex_test.cc",
+            "khulnasofttest-param-test-test",
+            "khulnasofttest-throw-on-failure-test_.cc",
+            "khulnasofttest-param-test-invalid-name1-test_.cc",
+            "khulnasofttest-param-test-invalid-name2-test_.cc",
+        ],
+    ) + select({
+        "//:windows": [],
+        "//conditions:default": [],
+    }),
+    copts = select({
+        "//:windows": ["-DKTEST_USE_OWN_TR1_TUPLE=0"],
+        "//conditions:default": ["-DKTEST_USE_OWN_TR1_TUPLE=1"],
+    }) + select({
+        # Ensure MSVC treats source files as UTF-8 encoded.
+        "//:msvc_compiler": ["-utf-8"],
+        "//conditions:default": [],
+    }),
+    includes = [
+        "khulnasofttest",
+        "khulnasofttest/include",
+        "khulnasofttest/include/internal",
+        "khulnasofttest/test",
+    ],
+    linkopts = select({
+        "//:qnx": [],
+        "//:windows": [],
+        "//conditions:default": ["-pthread"],
+    }),
+    deps = ["//:ktest_main"],
+)
+
+# Tests death tests.
+cc_test(
+    name = "khulnasofttest-death-test-test",
+    size = "medium",
+    srcs = ["khulnasofttest-death-test-test.cc"],
+    deps = ["//:ktest_main"],
+)
+
+cc_test(
+    name = "ktest_test_macro_stack_footprint_test",
+    size = "small",
+    srcs = ["ktest_test_macro_stack_footprint_test.cc"],
+    deps = ["//:ktest"],
+)
+
+#These khulnasofttest tests have their own main()
+cc_test(
+    name = "khulnasofttest-listener-test",
+    size = "small",
+    srcs = ["khulnasofttest-listener-test.cc"],
+    deps = ["//:ktest_main"],
+)
+
+cc_test(
+    name = "ktest-unittest-api_test",
+    size = "small",
+    srcs = [
+        "ktest-unittest-api_test.cc",
+    ],
+    deps = [
+        "//:ktest",
+    ],
+)
+
+cc_test(
+    name = "khulnasofttest-param-test-test",
+    size = "small",
+    srcs = [
+        "khulnasofttest-param-test-test.cc",
+        "khulnasofttest-param-test-test.h",
+        "khulnasofttest-param-test2-test.cc",
+    ],
+    deps = ["//:ktest"],
+)
+
+cc_test(
+    name = "ktest_unittest",
+    size = "small",
+    srcs = ["ktest_unittest.cc"],
+    shard_count = 2,
+    deps = ["//:ktest_main"],
+)
+
+#  Py tests
+
+py_library(
+    name = "ktest_test_utils",
+    testonly = 1,
+    srcs = ["ktest_test_utils.py"],
+    imports = ["."],
+)
+
+cc_binary(
+    name = "ktest_help_test_",
+    testonly = 1,
+    srcs = ["ktest_help_test_.cc"],
+    deps = ["//:ktest_main"],
+)
+
+py_test(
+    name = "ktest_help_test",
+    size = "small",
+    srcs = ["ktest_help_test.py"],
+    args = select({
+        "//:has_absl": ["--has_absl_flags"],
+        "//conditions:default": [],
+    }),
+    data = [":ktest_help_test_"],
+    deps = [":ktest_test_utils"],
+)
+
+cc_binary(
+    name = "khulnasofttest-output-test_",
+    testonly = 1,
+    srcs = ["khulnasofttest-output-test_.cc"],
+    deps = ["//:ktest"],
+)
+
+py_test(
+    name = "khulnasofttest-output-test",
+    size = "small",
+    srcs = ["khulnasofttest-output-test.py"],
+    args = select({
+        "//:has_absl": [],
+        "//conditions:default": ["--no_stacktrace_support"],
+    }),
+    data = [
+        "khulnasofttest-output-test-golden-lin.txt",
+        ":khulnasofttest-output-test_",
+    ],
+    deps = [":ktest_test_utils"],
+)
+
+cc_binary(
+    name = "khulnasofttest-color-test_",
+    testonly = 1,
+    srcs = ["khulnasofttest-color-test_.cc"],
+    deps = ["//:ktest"],
+)
+
+py_test(
+    name = "khulnasofttest-color-test",
+    size = "small",
+    srcs = ["khulnasofttest-color-test.py"],
+    data = [":khulnasofttest-color-test_"],
+    deps = [":ktest_test_utils"],
+)
+
+cc_binary(
+    name = "khulnasofttest-env-var-test_",
+    testonly = 1,
+    srcs = ["khulnasofttest-env-var-test_.cc"],
+    deps = ["//:ktest"],
+)
+
+py_test(
+    name = "khulnasofttest-env-var-test",
+    size = "medium",
+    srcs = ["khulnasofttest-env-var-test.py"],
+    data = [":khulnasofttest-env-var-test_"],
+    deps = [":ktest_test_utils"],
+)
+
+cc_binary(
+    name = "khulnasofttest-failfast-unittest_",
+    testonly = 1,
+    srcs = ["khulnasofttest-failfast-unittest_.cc"],
+    deps = ["//:ktest"],
+)
+
+py_test(
+    name = "khulnasofttest-failfast-unittest",
+    size = "medium",
+    srcs = ["khulnasofttest-failfast-unittest.py"],
+    data = [":khulnasofttest-failfast-unittest_"],
+    deps = [":ktest_test_utils"],
+)
+
+cc_binary(
+    name = "khulnasofttest-filter-unittest_",
+    testonly = 1,
+    srcs = ["khulnasofttest-filter-unittest_.cc"],
+    deps = ["//:ktest"],
+)
+
+py_test(
+    name = "khulnasofttest-filter-unittest",
+    size = "medium",
+    srcs = ["khulnasofttest-filter-unittest.py"],
+    data = [":khulnasofttest-filter-unittest_"],
+    deps = [":ktest_test_utils"],
+)
+
+cc_binary(
+    name = "khulnasofttest-global-environment-unittest_",
+    testonly = 1,
+    srcs = ["khulnasofttest-global-environment-unittest_.cc"],
+    deps = ["//:ktest"],
+)
+
+py_test(
+    name = "khulnasofttest-global-environment-unittest",
+    size = "medium",
+    srcs = ["khulnasofttest-global-environment-unittest.py"],
+    data = [":khulnasofttest-global-environment-unittest_"],
+    deps = [":ktest_test_utils"],
+)
+
+cc_binary(
+    name = "khulnasofttest-break-on-failure-unittest_",
+    testonly = 1,
+    srcs = ["khulnasofttest-break-on-failure-unittest_.cc"],
+    deps = ["//:ktest"],
+)
+
+py_test(
+    name = "khulnasofttest-break-on-failure-unittest",
+    size = "small",
+    srcs = ["khulnasofttest-break-on-failure-unittest.py"],
+    data = [":khulnasofttest-break-on-failure-unittest_"],
+    deps = [":ktest_test_utils"],
+)
+
+cc_test(
+    name = "ktest_assert_by_exception_test",
+    size = "small",
+    srcs = ["ktest_assert_by_exception_test.cc"],
+    deps = ["//:ktest"],
+)
+
+cc_binary(
+    name = "khulnasofttest-throw-on-failure-test_",
+    testonly = 1,
+    srcs = ["khulnasofttest-throw-on-failure-test_.cc"],
+    deps = ["//:ktest"],
+)
+
+py_test(
+    name = "khulnasofttest-throw-on-failure-test",
+    size = "small",
+    srcs = ["khulnasofttest-throw-on-failure-test.py"],
+    data = [":khulnasofttest-throw-on-failure-test_"],
+    deps = [":ktest_test_utils"],
+)
+
+cc_binary(
+    name = "khulnasofttest-list-tests-unittest_",
+    testonly = 1,
+    srcs = ["khulnasofttest-list-tests-unittest_.cc"],
+    deps = ["//:ktest"],
+)
+
+cc_test(
+    name = "ktest_skip_test",
+    size = "small",
+    srcs = ["ktest_skip_test.cc"],
+    deps = ["//:ktest_main"],
+)
+
+cc_test(
+    name = "ktest_skip_in_environment_setup_test",
+    size = "small",
+    srcs = ["ktest_skip_in_environment_setup_test.cc"],
+    deps = ["//:ktest_main"],
+)
+
+py_test(
+    name = "ktest_skip_check_output_test",
+    size = "small",
+    srcs = ["ktest_skip_check_output_test.py"],
+    data = [":ktest_skip_test"],
+    deps = [":ktest_test_utils"],
+)
+
+py_test(
+    name = "ktest_skip_environment_check_output_test",
+    size = "small",
+    srcs = ["ktest_skip_environment_check_output_test.py"],
+    data = [
+        ":ktest_skip_in_environment_setup_test",
+    ],
+    deps = [":ktest_test_utils"],
+)
+
+py_test(
+    name = "khulnasofttest-list-tests-unittest",
+    size = "small",
+    srcs = ["khulnasofttest-list-tests-unittest.py"],
+    data = [":khulnasofttest-list-tests-unittest_"],
+    deps = [":ktest_test_utils"],
+)
+
+cc_binary(
+    name = "khulnasofttest-shuffle-test_",
+    srcs = ["khulnasofttest-shuffle-test_.cc"],
+    deps = ["//:ktest"],
+)
+
+py_test(
+    name = "khulnasofttest-shuffle-test",
+    size = "small",
+    srcs = ["khulnasofttest-shuffle-test.py"],
+    data = [":khulnasofttest-shuffle-test_"],
+    deps = [":ktest_test_utils"],
+)
+
+cc_binary(
+    name = "khulnasofttest-catch-exceptions-no-ex-test_",
+    testonly = 1,
+    srcs = ["khulnasofttest-catch-exceptions-test_.cc"],
+    deps = ["//:ktest_main"],
+)
+
+cc_binary(
+    name = "khulnasofttest-catch-exceptions-ex-test_",
+    testonly = 1,
+    srcs = ["khulnasofttest-catch-exceptions-test_.cc"],
+    copts = ["-fexceptions"],
+    deps = ["//:ktest_main"],
+)
+
+py_test(
+    name = "khulnasofttest-catch-exceptions-test",
+    size = "small",
+    srcs = ["khulnasofttest-catch-exceptions-test.py"],
+    data = [
+        ":khulnasofttest-catch-exceptions-ex-test_",
+        ":khulnasofttest-catch-exceptions-no-ex-test_",
+    ],
+    deps = [":ktest_test_utils"],
+)
+
+cc_binary(
+    name = "ktest_xml_output_unittest_",
+    testonly = 1,
+    srcs = ["ktest_xml_output_unittest_.cc"],
+    deps = ["//:ktest"],
+)
+
+cc_test(
+    name = "ktest_no_test_unittest",
+    size = "small",
+    srcs = ["ktest_no_test_unittest.cc"],
+    deps = ["//:ktest"],
+)
+
+py_test(
+    name = "ktest_xml_output_unittest",
+    size = "small",
+    srcs = [
+        "ktest_xml_output_unittest.py",
+        "ktest_xml_test_utils.py",
+    ],
+    args = select({
+        "//:has_absl": [],
+        "//conditions:default": ["--no_stacktrace_support"],
+    }),
+    data = [
+        # We invoke ktest_no_test_unittest to verify the XML output
+        # when the test program contains no test definition.
+        ":ktest_no_test_unittest",
+        ":ktest_xml_output_unittest_",
+    ],
+    deps = [":ktest_test_utils"],
+)
+
+cc_binary(
+    name = "ktest_xml_outfile1_test_",
+    testonly = 1,
+    srcs = ["ktest_xml_outfile1_test_.cc"],
+    deps = ["//:ktest_main"],
+)
+
+cc_binary(
+    name = "ktest_xml_outfile2_test_",
+    testonly = 1,
+    srcs = ["ktest_xml_outfile2_test_.cc"],
+    deps = ["//:ktest_main"],
+)
+
+py_test(
+    name = "ktest_xml_outfiles_test",
+    size = "small",
+    srcs = [
+        "ktest_xml_outfiles_test.py",
+        "ktest_xml_test_utils.py",
+    ],
+    data = [
+        ":ktest_xml_outfile1_test_",
+        ":ktest_xml_outfile2_test_",
+    ],
+    deps = [":ktest_test_utils"],
+)
+
+cc_binary(
+    name = "khulnasofttest-setuptestsuite-test_",
+    testonly = 1,
+    srcs = ["khulnasofttest-setuptestsuite-test_.cc"],
+    deps = ["//:ktest_main"],
+)
+
+py_test(
+    name = "khulnasofttest-setuptestsuite-test",
+    size = "medium",
+    srcs = ["khulnasofttest-setuptestsuite-test.py"],
+    data = [":khulnasofttest-setuptestsuite-test_"],
+    deps = [":ktest_test_utils"],
+)
+
+cc_binary(
+    name = "khulnasofttest-uninitialized-test_",
+    testonly = 1,
+    srcs = ["khulnasofttest-uninitialized-test_.cc"],
+    deps = ["//:ktest"],
+)
+
+py_test(
+    name = "khulnasofttest-uninitialized-test",
+    size = "medium",
+    srcs = ["khulnasofttest-uninitialized-test.py"],
+    data = ["khulnasofttest-uninitialized-test_"],
+    deps = [":ktest_test_utils"],
+)
+
+cc_binary(
+    name = "ktest_testbridge_test_",
+    testonly = 1,
+    srcs = ["ktest_testbridge_test_.cc"],
+    deps = ["//:ktest_main"],
+)
+
+# Tests that filtering via testbridge works
+py_test(
+    name = "ktest_testbridge_test",
+    size = "small",
+    srcs = ["ktest_testbridge_test.py"],
+    data = [":ktest_testbridge_test_"],
+    deps = [":ktest_test_utils"],
+)
+
+py_test(
+    name = "khulnasofttest-json-outfiles-test",
+    size = "small",
+    srcs = [
+        "khulnasofttest-json-outfiles-test.py",
+        "ktest_json_test_utils.py",
+    ],
+    data = [
+        ":ktest_xml_outfile1_test_",
+        ":ktest_xml_outfile2_test_",
+    ],
+    deps = [":ktest_test_utils"],
+)
+
+py_test(
+    name = "khulnasofttest-json-output-unittest",
+    size = "medium",
+    srcs = [
+        "khulnasofttest-json-output-unittest.py",
+        "ktest_json_test_utils.py",
+    ],
+    args = select({
+        "//:has_absl": [],
+        "//conditions:default": ["--no_stacktrace_support"],
+    }),
+    data = [
+        # We invoke ktest_no_test_unittest to verify the JSON output
+        # when the test program contains no test definition.
+        ":ktest_no_test_unittest",
+        ":ktest_xml_output_unittest_",
+    ],
+    deps = [":ktest_test_utils"],
+)
+
+# Verifies interaction of death tests and exceptions.
+cc_test(
+    name = "khulnasofttest-death-test_ex_catch_test",
+    size = "medium",
+    srcs = ["khulnasofttest-death-test_ex_test.cc"],
+    copts = ["-fexceptions"],
+    defines = ["KTEST_ENABLE_CATCH_EXCEPTIONS_=1"],
+    deps = ["//:ktest"],
+)
+
+cc_binary(
+    name = "khulnasofttest-param-test-invalid-name1-test_",
+    testonly = 1,
+    srcs = ["khulnasofttest-param-test-invalid-name1-test_.cc"],
+    deps = ["//:ktest"],
+)
+
+cc_binary(
+    name = "khulnasofttest-param-test-invalid-name2-test_",
+    testonly = 1,
+    srcs = ["khulnasofttest-param-test-invalid-name2-test_.cc"],
+    deps = ["//:ktest"],
+)
+
+py_test(
+    name = "khulnasofttest-param-test-invalid-name1-test",
+    size = "small",
+    srcs = ["khulnasofttest-param-test-invalid-name1-test.py"],
+    data = [":khulnasofttest-param-test-invalid-name1-test_"],
+    tags = [
+        "no_test_msvc2015",
+        "no_test_msvc2017",
+    ],
+    deps = [":ktest_test_utils"],
+)
+
+py_test(
+    name = "khulnasofttest-param-test-invalid-name2-test",
+    size = "small",
+    srcs = ["khulnasofttest-param-test-invalid-name2-test.py"],
+    data = [":khulnasofttest-param-test-invalid-name2-test_"],
+    tags = [
+        "no_test_msvc2015",
+        "no_test_msvc2017",
+    ],
+    deps = [":ktest_test_utils"],
+)

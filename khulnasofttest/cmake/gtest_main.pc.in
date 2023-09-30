@@ -1,0 +1,10 @@
+libdir=@CMAKE_INSTALL_FULL_LIBDIR@
+includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@
+
+Name: ktest_main
+Description: KhulnasoftTest (with main() function)
+Version: @PROJECT_VERSION@
+URL: https://github.com/khulnasoft-lab/khulnasofttest
+Requires: ktest = @PROJECT_VERSION@
+Libs: -L${libdir} -lktest_main @CMAKE_THREAD_LIBS_INIT@
+Cflags: -I${includedir} @KTEST_HAS_PTHREAD_MACRO@

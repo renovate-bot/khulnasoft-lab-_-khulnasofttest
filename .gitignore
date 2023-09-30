@@ -1,0 +1,88 @@
+# Ignore CI build directory
+build/
+xcuserdata
+cmake-build-debug/
+.idea/
+bazel-bin
+bazel-genfiles
+bazel-khulnasofttest
+bazel-out
+bazel-testlogs
+# python
+*.pyc
+
+# Visual Studio files
+.vs
+*.sdf
+*.opensdf
+*.VC.opendb
+*.suo
+*.user
+_ReSharper.Caches/
+Win32-Debug/
+Win32-Release/
+x64-Debug/
+x64-Release/
+
+# VSCode files
+.cache/
+cmake-variants.yaml
+
+# Ignore autoconf / automake files
+Makefile.in
+aclocal.m4
+configure
+build-aux/
+autom4te.cache/
+khulnasofttest/m4/libtool.m4
+khulnasofttest/m4/ltoptions.m4
+khulnasofttest/m4/ltsugar.m4
+khulnasofttest/m4/ltversion.m4
+khulnasofttest/m4/lt~obsolete.m4
+khulnasoftmock/m4
+
+# Ignore generated directories.
+khulnasoftmock/fused-src/
+khulnasofttest/fused-src/
+
+# macOS files
+.DS_Store
+khulnasofttest/.DS_Store
+khulnasofttest/xcode/.DS_Store
+
+# Ignore cmake generated directories and files.
+CMakeFiles
+CTestTestfile.cmake
+Makefile
+cmake_install.cmake
+khulnasoftmock/CMakeFiles
+khulnasoftmock/CTestTestfile.cmake
+khulnasoftmock/Makefile
+khulnasoftmock/cmake_install.cmake
+khulnasoftmock/ktest
+/bin
+/khulnasoftmock/kmock.dir
+/khulnasoftmock/kmock_main.dir
+/khulnasoftmock/RUN_TESTS.vcxproj.filters
+/khulnasoftmock/RUN_TESTS.vcxproj
+/khulnasoftmock/INSTALL.vcxproj.filters
+/khulnasoftmock/INSTALL.vcxproj
+/khulnasoftmock/kmock_main.vcxproj.filters
+/khulnasoftmock/kmock_main.vcxproj
+/khulnasoftmock/kmock.vcxproj.filters
+/khulnasoftmock/kmock.vcxproj
+/khulnasoftmock/kmock.sln
+/khulnasoftmock/ALL_BUILD.vcxproj.filters
+/khulnasoftmock/ALL_BUILD.vcxproj
+/lib
+/Win32
+/ZERO_CHECK.vcxproj.filters
+/ZERO_CHECK.vcxproj
+/RUN_TESTS.vcxproj.filters
+/RUN_TESTS.vcxproj
+/INSTALL.vcxproj.filters
+/INSTALL.vcxproj
+/khulnasofttest-distribution.sln
+/CMakeCache.txt
+/ALL_BUILD.vcxproj.filters
+/ALL_BUILD.vcxproj

@@ -1,0 +1,219 @@
+# Copyright 2017 Khulnasoft Inc.
+# All Rights Reserved.
+#
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are
+# met:
+#
+#     * Redistributions of source code must retain the above copyright
+# notice, this list of conditions and the following disclaimer.
+#     * Redistributions in binary form must reproduce the above
+# copyright notice, this list of conditions and the following disclaimer
+# in the documentation and/or other materials provided with the
+# distribution.
+#     * Neither the name of Khulnasoft Inc. nor the names of its
+# contributors may be used to endorse or promote products derived from
+# this software without specific prior written permission.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+# A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT
+# OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+# SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+# LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+# DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+# THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+# (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+#   Bazel Build for Khulnasoft C++ Testing Framework(Khulnasoft Test)
+
+package(default_visibility = ["//visibility:public"])
+
+licenses(["notice"])
+
+exports_files(["LICENSE"])
+
+config_setting(
+    name = "qnx",
+    constraint_values = ["@platforms//os:qnx"],
+)
+
+config_setting(
+    name = "windows",
+    constraint_values = ["@platforms//os:windows"],
+)
+
+config_setting(
+    name = "freebsd",
+    constraint_values = ["@platforms//os:freebsd"],
+)
+
+config_setting(
+    name = "openbsd",
+    constraint_values = ["@platforms//os:openbsd"],
+)
+
+config_setting(
+    name = "msvc_compiler",
+    flag_values = {
+        "@bazel_tools//tools/cpp:compiler": "msvc-cl",
+    },
+    visibility = [":__subpackages__"],
+)
+
+config_setting(
+    name = "has_absl",
+    values = {"define": "absl=1"},
+)
+
+# Library that defines the FRIEND_TEST macro.
+cc_library(
+    name = "ktest_prod",
+    hdrs = ["khulnasofttest/include/ktest/ktest_prod.h"],
+    includes = ["khulnasofttest/include"],
+)
+
+# Khulnasoft Test including Khulnasoft Mock
+cc_library(
+    name = "ktest",
+    srcs = glob(
+        include = [
+            "khulnasofttest/src/*.cc",
+            "khulnasofttest/src/*.h",
+            "khulnasofttest/include/ktest/**/*.h",
+            "khulnasoftmock/src/*.cc",
+            "khulnasoftmock/include/kmock/**/*.h",
+        ],
+        exclude = [
+            "khulnasofttest/src/ktest-all.cc",
+            "khulnasofttest/src/ktest_main.cc",
+            "khulnasoftmock/src/kmock-all.cc",
+            "khulnasoftmock/src/kmock_main.cc",
+        ],
+    ),
+    hdrs = glob([
+        "khulnasofttest/include/ktest/*.h",
+        "khulnasoftmock/include/kmock/*.h",
+    ]),
+    copts = select({
+        ":qnx": [],
+        ":windows": [],
+        "//conditions:default": ["-pthread"],
+    }),
+    defines = select({
+        ":has_absl": ["KTEST_HAS_ABSL=1"],
+        "//conditions:default": [],
+    }),
+    features = select({
+        ":windows": ["windows_export_all_symbols"],
+        "//conditions:default": [],
+    }),
+    includes = [
+        "khulnasoftmock",
+        "khulnasoftmock/include",
+        "khulnasofttest",
+        "khulnasofttest/include",
+    ],
+    linkopts = select({
+        ":qnx": ["-lregex"],
+        ":windows": [],
+        ":freebsd": [
+            "-lm",
+            "-pthread",
+        ],
+        ":openbsd": [
+            "-lm",
+            "-pthread",
+        ],
+        "//conditions:default": ["-pthread"],
+    }),
+    deps = select({
+        ":has_absl": [
+            "@com_khulnasoft_absl//absl/container:flat_hash_set",
+            "@com_khulnasoft_absl//absl/debugging:failure_signal_handler",
+            "@com_khulnasoft_absl//absl/debugging:stacktrace",
+            "@com_khulnasoft_absl//absl/debugging:symbolize",
+            "@com_khulnasoft_absl//absl/flags:flag",
+            "@com_khulnasoft_absl//absl/flags:parse",
+            "@com_khulnasoft_absl//absl/flags:reflection",
+            "@com_khulnasoft_absl//absl/flags:usage",
+            "@com_khulnasoft_absl//absl/strings",
+            "@com_khulnasoft_absl//absl/types:any",
+            "@com_khulnasoft_absl//absl/types:optional",
+            "@com_khulnasoft_absl//absl/types:variant",
+            "@com_khulnasoftsource_code_re2//:re2",
+        ],
+        "//conditions:default": [],
+    }),
+)
+
+cc_library(
+    name = "ktest_main",
+    srcs = ["khulnasoftmock/src/kmock_main.cc"],
+    features = select({
+        ":windows": ["windows_export_all_symbols"],
+        "//conditions:default": [],
+    }),
+    deps = [":ktest"],
+)
+
+# The following rules build samples of how to use gTest.
+cc_library(
+    name = "ktest_sample_lib",
+    srcs = [
+        "khulnasofttest/samples/sample1.cc",
+        "khulnasofttest/samples/sample2.cc",
+        "khulnasofttest/samples/sample4.cc",
+    ],
+    hdrs = [
+        "khulnasofttest/samples/prime_tables.h",
+        "khulnasofttest/samples/sample1.h",
+        "khulnasofttest/samples/sample2.h",
+        "khulnasofttest/samples/sample3-inl.h",
+        "khulnasofttest/samples/sample4.h",
+    ],
+    features = select({
+        ":windows": ["windows_export_all_symbols"],
+        "//conditions:default": [],
+    }),
+)
+
+cc_test(
+    name = "ktest_samples",
+    size = "small",
+    # All Samples except:
+    #   sample9 (main)
+    #   sample10 (main and takes a command line option and needs to be separate)
+    srcs = [
+        "khulnasofttest/samples/sample1_unittest.cc",
+        "khulnasofttest/samples/sample2_unittest.cc",
+        "khulnasofttest/samples/sample3_unittest.cc",
+        "khulnasofttest/samples/sample4_unittest.cc",
+        "khulnasofttest/samples/sample5_unittest.cc",
+        "khulnasofttest/samples/sample6_unittest.cc",
+        "khulnasofttest/samples/sample7_unittest.cc",
+        "khulnasofttest/samples/sample8_unittest.cc",
+    ],
+    linkstatic = 0,
+    deps = [
+        "ktest_sample_lib",
+        ":ktest_main",
+    ],
+)
+
+cc_test(
+    name = "sample9_unittest",
+    size = "small",
+    srcs = ["khulnasofttest/samples/sample9_unittest.cc"],
+    deps = [":ktest"],
+)
+
+cc_test(
+    name = "sample10_unittest",
+    size = "small",
+    srcs = ["khulnasofttest/samples/sample10_unittest.cc"],
+    deps = [":ktest"],
+)

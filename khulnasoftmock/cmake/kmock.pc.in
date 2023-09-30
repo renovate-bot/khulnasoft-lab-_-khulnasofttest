@@ -1,0 +1,10 @@
+libdir=@CMAKE_INSTALL_FULL_LIBDIR@
+includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@
+
+Name: kmock
+Description: KhulnasoftMock (without main() function)
+Version: @PROJECT_VERSION@
+URL: https://github.com/khulnasoft-lab/khulnasofttest
+Requires: ktest = @PROJECT_VERSION@
+Libs: -L${libdir} -lkmock @CMAKE_THREAD_LIBS_INIT@
+Cflags: -I${includedir} @KTEST_HAS_PTHREAD_MACRO@
