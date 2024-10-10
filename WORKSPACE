@@ -14,9 +14,9 @@ http_archive(
 
 http_archive(
   name = "bazel_skylib",  # 2023-05-31T19:24:07Z
-  sha256 = "08c0386f45821ce246bbbf77503c973246ed6ee5c3463e41efc197fa9bc3a7f4",
-  strip_prefix = "bazel-skylib-288731ef9f7f688932bd50e704a91a45ec185f9b",
-  urls = ["https://github.com/bazelbuild/bazel-skylib/archive/288731ef9f7f688932bd50e704a91a45ec185f9b.zip"],
+  sha256 = "5e6c9af21b6d6bc5cc32feef0253060c42331a2c65241f5e1b83a662b9fd7b65",
+  strip_prefix = "bazel-skylib-56b235e700ddd6a15b7d9fa1803fa7a84048471e",
+  urls = ["https://github.com/bazelbuild/bazel-skylib/archive/56b235e700ddd6a15b7d9fa1803fa7a84048471e.zip"],
 )
 
 http_archive(
